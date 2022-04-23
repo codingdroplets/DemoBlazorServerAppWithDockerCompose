@@ -1,0 +1,39 @@
+﻿@using DemoBlazorServerApp.Models
+@inject DatabaseContext dbContext
+
+<div class="row">
+    <div class="col-lg-4 pt-4">
+        <EditForm Model="_user" OnSubmit="Submit">
+            <div class="mb-3">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" @bind-value="_user.FullName">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" @bind-value="_user.Email">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" @bind-value="_user.Password">
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Save</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback OnUserCreated{ get; set; }
+
+    private User _user = new User();
+
+    public async Task Submit()
+    {
+        dbContext.Users.Add(_user);
+        await dbContext.SaveChangesAsync();
+        await OnUserCreated.InvokeAsync();
+        _user = new User();
+    }
+}

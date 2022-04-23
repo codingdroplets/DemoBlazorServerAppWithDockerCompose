@@ -1,0 +1,39 @@
+﻿@page "/users"
+@using DemoBlazorServerApp.Models
+@inject DatabaseContext dbContext
+
+<ul class="nav nav-tabs" id="users-tab-nav" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab" aria-controls="users" aria-selected="true">Users</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="add-user-tab" data-bs-toggle="tab" data-bs-target="#add-user" type="button" role="tab" aria-controls="add-user" aria-selected="false">Add User</button>
+    </li>
+</ul>
+<div class="tab-content" id="users-tab-content">
+    <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+        <UserList Users="_users" UserDelete="DeleteUser" />
+    </div>
+    <div class="tab-pane fade" id="add-user" role="tabpanel" aria-labelledby="add-user-tab">
+        <AddUser OnUserCreated="FetchUsers" />
+    </div>
+</div>
+
+@code{
+    private List<User> _users;
+
+    protected override void OnInitialized()
+    {
+        FetchUsers();
+        base.OnInitialized();
+    }
+
+    private void FetchUsers() => _users = dbContext.Users.ToList();
+
+    public async Task DeleteUser(User user)
+    {
+        dbContext.Users.Remove(user);
+        await dbContext.SaveChangesAsync();
+        FetchUsers();
+    }
+}

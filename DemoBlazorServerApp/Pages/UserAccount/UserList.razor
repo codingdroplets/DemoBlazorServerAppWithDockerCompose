@@ -1,0 +1,29 @@
+﻿@using DemoBlazorServerApp.Models
+
+@if (Users is not null || Users.Count != 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Users.Count; i++)
+            {
+                <UserRecord RecordIndex=(i+1) User="@Users[i]" UserDelete="UserDelete"></UserRecord>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Parameter]
+    public List<User> Users { get; set; }
+
+    [Parameter]
+    public EventCallback<User> UserDelete { get; set; }
+}
